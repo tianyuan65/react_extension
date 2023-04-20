@@ -15,3 +15,19 @@
             * 如果需要在setState()执行后获取最新的状态数据，要在第二个callback函数中读取
             
 ## 二、lazyLoad 懒加载
+* 路由组件的懒加载
+    * ```
+        //1.通过React的lazy函数配合import()函数动态加载路由组件 ===> 路由组件代码会被分开打包，lazy是一个函数，函数里传递的参数也必须是一个函数，在函数体内部使用import来引入子组件
+        const Home=lazy(()=>import('./Home'))
+        const About=lazy(()=>import('./About'))
+        //2.通过<Suspense>指定在加载得到路由打包文件前显示一个自定义loading界面
+        <Suspense fallback={<h1>Loading...</h1>}>
+            <Routes>
+                <Route path="/about" element={<About/>}/>
+                <Route path="/home" element={<Home/>}/>
+            </Routes>
+        </Suspense>
+
+      ```
+
+## 三、Hook
