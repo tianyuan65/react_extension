@@ -16,19 +16,21 @@
             
 ## 二、lazyLoad 懒加载
 * 路由组件的懒加载
-    * ```
-        //1.通过React的lazy函数配合import()函数动态加载路由组件 ===> 路由组件代码会被分开打包，lazy是一个函数，函数里传递的参数也必须是一个函数，在函数体内部使用import来引入子组件
-        const Home=lazy(()=>import('./Home'))
-        const About=lazy(()=>import('./About'))
-        //2.通过<Suspense>指定在加载得到路由打包文件前显示一个自定义loading界面
-        <Suspense fallback={<h1>Loading...</h1>}>
-            <Routes>
-                <Route path="/about" element={<About/>}/>
-                <Route path="/home" element={<Home/>}/>
-            </Routes>
-        </Suspense>
-
-      ```
+    * 路由组件什么时候需要懒加载？
+        * 以淘宝官网网页举例，网页中有我经常访问的导航选项，如女装、美妆、零食、数码等；也有我除了特殊情况，一般根本不会去访问的导航选项，如男装、居家生活、母婴用品等。我经常访问的选项中有一个一个的路由组件，为了整体页面和局部页面更快、更好地展示，没啥事根本不看的就不会在页面一开始加载时就全部展示，只有特殊情况想要访问的时候，才会进行懒加载并展示。
+    * 语法：
+        * ```
+            //1.通过React的lazy函数配合import()函数动态加载路由组件 ===> 路由组件代码会被分开打包，lazy是一个函数，函数里传递的参数也必须是一个函数，在函数体内部使用import来引入子组件
+            const Home=lazy(()=>import('./Home'))
+            const About=lazy(()=>import('./About'))
+            //2.通过<Suspense>指定在加载得到路由打包文件前显示一个自定义loading界面
+            <Suspense fallback={<h1>Loading...</h1>}>
+                <Routes>
+                    <Route path="/about" element={<About/>}/>
+                    <Route path="/home" element={<Home/>}/>
+                </Routes>
+            </Suspense>
+        ```
 
 ## 三、Hook
 * 1. React Hook/Hooks是什么？
@@ -75,5 +77,9 @@
         * 在提示输入的回调函数中，可以提取输入的值，```alert(myRef.current.value)```
     * 作用:保存标签对象,功能与React.createRef()一样 
 
-## 四、Fragment
-* 
+## 四、Fragment  文档碎片
+* 打开文件后，在控制台会发现因为组件之间多次暴露、引入的关系，有多层的真正要展示的部分由多层的div包裹。Fragment标签的作用就是可以不用必须有一个真实的DOM根标签，可以消除想要删除的一些中间的div标签，或者拿App.js举例，App的子组件标签可以被空的标签包裹。Fragment标签有且只有一个属性，就是key。
+
+## 五、Context
+* 用于组件间通信(就是组件间想要相互传递一些数据)的方式，常用语【祖先组件】与【后代组件】间通信
+
