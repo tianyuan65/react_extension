@@ -113,6 +113,56 @@
           ```
 * 注意：在应用开发中一般不用context, 一般都用它的封装react插件(就是react-redux)
 
-## 组件优化
-* 
+## 六、组件优化
+* 1. Component的2个问题
+    * 只要执行setState(),即使不改变状态数据, 组件也会重新render() ==> 效率低
+    * 只当前组件重新render(), 就会自动重新render子组件，即便子组件没有用到父组件的任何数据 ==> 效率低
+* 2. 提高效率的方法
+    * 只有当组件的state或props数据发生改变时，重新调用render()
+* 3. 原因
+    * Component中的shouldComponentUpdate()(这个钩子是个控制组件更新的阀门，若不做特殊处理，默认为true)总是返回true
+* 4. 解决方法
+    * 方法1：重写shouldComponentUpdate()方法，比较新旧state或props数据, 如果有变化才返回true, 如果没有返回false
+        * ```
+            //父组件
+            shouldComponentUpdate(nextProps,nextState){
+                // 打印组件实例目前的props和state
+                console.log(this.props,this.state);  //{}[[Prototype]]: Object {bagName: 'Gucci'}
+                // 打印组件实例接下来要更新的目标props和state
+                console.log(nextProps,nextState);   //{}[[Prototype]]: Object {bagName: 'Prada'}
+                // 若目前的状态和即将更新的状态一样，那就关闭阀门，且不调用render()
+                if(this.state.bagName===nextState.bagName) return false
+                // 若状态发生了变化，开启阀门，并调用render()
+                else return true
+                // return !this.state.bagName===nextState.bagName  //与上面if判断作用相同
+            }
+            //子组件
+            shouldComponentUpdate(nextProps,nextState){
+                // 打印组件实例目前的props和state，若父组件没有给子组件传递props，子组件中props输出的永远是空对象，但若传递的props值是固定的，那就只输出被传递的那个props值
+                    // state输出null的原因是子组件没有自身的state
+                console.log(this.props,this.state);  //{} null
+                // 打印组件实例接下来要更新的目标props和state，若父组件没有给子组件传递props，子组件中props输出的永远是空对象，但若传递的props值是固定的，那就只输出被传递的那个props值
+                    // state输出null的原因是子组件没有自身的state
+                console.log(nextProps,nextState);   //{} null
+                // 若目前的props值和即将更新的props值一样，那就关闭阀门，且不调用render()
+                if(this.props.bagName===nextProps.bagName) return false
+                // 若props值发生了变化，开启阀门，并调用render()
+                else return true
+                // return !this.props.bagName===nextProps.bagName  //与上面if判断作用相同
+            }
+          ```
+    * 方法2：使用PureComponent，因为PureComponent重写了shouldComponentUpdate(), 只有state或props数据有变化才返回true
+        * 注意：PureComponent中只是进行state和props数据的浅比较, 如果只是数据对象内部数据有了变化, 返回false，比如下面的代码，即使点了按钮也不会有变化，因为只是state这个对象的内部的数据改变了，bagName变为Prada，而不是状态的变化。所以要产生新数据，而不是直接修改state数据。项目中一般使用PureComponent来优化。
+            * ```
+                state={bagName:"Gucci",stus:"s1","s2","s3"}
+                //直接修改数据行为
+                const {stus}=this.state
+                stus.unshift('p4')
+                this.setState(stus)
+                //创建新数据行为
+                const {stus}=this.state
+                this.setState({'p4',[...stus]})
+              ```
+
+## 八、render props
 
