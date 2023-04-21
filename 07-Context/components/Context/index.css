@@ -1,0 +1,17 @@
+.parent{
+    width:500px;
+    background: #bfa;
+    padding:10px;
+}
+
+.child{
+    width:100%;
+    background: aqua;
+    padding:10px;
+}
+
+.grand{
+    width:100%;
+    background: #ccf;
+    padding:10px;
+}

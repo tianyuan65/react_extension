@@ -81,5 +81,38 @@
 * 打开文件后，在控制台会发现因为组件之间多次暴露、引入的关系，有多层的真正要展示的部分由多层的div包裹。Fragment标签的作用就是可以不用必须有一个真实的DOM根标签，可以消除想要删除的一些中间的div标签，或者拿App.js举例，App的子组件标签可以被空的标签包裹。Fragment标签有且只有一个属性，就是key。
 
 ## 五、Context
-* 用于组件间通信(就是组件间想要相互传递一些数据)的方式，常用语【祖先组件】与【后代组件】间通信
+* 用于组件间通信(就是组件间想要相互传递一些数据)的方式，常用语【祖先组件】与【后代组件】间通信.
+* 1. 创建Context容器对象：const XxxContext=React.createContext()
+* 2. 渲染子组件时，外面包裹xxxContext.Provider, 通过value属性给后代组件传递数据：
+    * ```
+        <MyContext.Provider value={username}>
+            <B />
+        </MyContext.Provider>
+      ```
+* 3. 后代组件读取数据
+    * 方法1：在需要读取数据的组件中声明接收数据 **(仅适用于类是组件)**
+        * ```
+            <!-- 在后代组件中声明接收context -->
+            static contextType=MyContext
+            <!-- render方法中解构赋值后，读取context中的value -->
+            const {username,age}=this.context
+            <h4>我从我爸组件中接收到的是用户名是：{username},年龄为：{age}</h4>
+          ```
+    * 方法2：XxxContext.Consumer标签中写函数 **(函数组件和类组件都适用)**
+        * ```
+            <!-- 从MyContext中获取Consumer -->
+            const {Provider,Consumer}=MyContext
+            <!-- 在后代组件中，使用Consumer标签将获取的数据的函数胡value包裹起来 -->
+            <Consumer>
+                {
+                    <!-- value就是context中的数据 -->
+                    value=> `${value.username},年龄为:${value.age}`
+                    // console.log(value);  //{username: 'tom', age: 12}
+                }
+            </Consumer>
+          ```
+* 注意：在应用开发中一般不用context, 一般都用它的封装react插件(就是react-redux)
+
+## 组件优化
+* 
 
